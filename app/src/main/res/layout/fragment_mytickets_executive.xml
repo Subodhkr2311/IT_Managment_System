@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background_color"
+    tools:context=".MyticketsExecutiveFragment">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent">
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            app:cardCornerRadius="16dp"
+            app:cardBackgroundColor="@color/card_background"
+            android:stateListAnimator="@animator/card_state_list_anim">
+
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scrollbars="none"
+                android:fadeScrollbars="true"
+                android:overScrollMode="never">
+
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/filterChipGroup"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="12dp"
+                    app:chipSpacingHorizontal="8dp"
+                    app:selectionRequired="true"
+                    app:singleSelection="true"
+                    app:chipSpacingVertical="8dp">
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chipAll"
+                        style="@style/CustomChipChoice"
+                        android:layout_marginStart="2dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="All"
+                        android:checked="true"
+                        android:elevation="4dp"
+                        android:stateListAnimator="@animator/card_state_list_anim"
+                         />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chipAssigned"
+                        style="@style/CustomChipChoice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="2dp"
+                        android:text="Assigned"
+                        android:elevation="4dp"
+                        android:stateListAnimator="@animator/card_state_list_anim"
+                         />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chipUnassigned"
+                        style="@style/CustomChipChoice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="2dp"
+                        android:text="Unassigned"
+                        android:elevation="4dp"
+                        android:stateListAnimator="@animator/card_state_list_anim"
+                        />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chipMy"
+                        style="@style/CustomChipChoice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="2dp"
+                        android:text="My Tickets"
+                        android:elevation="4dp"
+                        android:stateListAnimator="@animator/card_state_list_anim"
+                        />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chipRecent"
+                        style="@style/CustomChipChoice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="2dp"
+                        android:text="Recent"
+                        android:elevation="4dp"
+                        android:stateListAnimator="@animator/card_state_list_anim"
+                         />
+
+                </com.google.android.material.chip.ChipGroup>
+            </HorizontalScrollView>
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tabLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/background_color"
+            app:tabIndicatorColor="#F04B95"
+            android:elevation="5dp"
+           />
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/viewPager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="8dp"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -1,0 +1,68 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/rvJourney" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Arriving in:"
+        android:layout_marginTop="16dp" />
+
+    <Button
+        android:id="@+id/btnArriving"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Mark as Arriving" />
+
+    <Button
+        android:id="@+id/btnResolve"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Mark as Resolved"
+        android:layout_marginTop="16dp"
+        android:visibility="gone" />
+
+    <Button
+        android:id="@+id/btnResolveYes"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Yes"
+        android:visibility="gone" />
+
+    <Button
+        android:id="@+id/btnResolveNo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="No"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/resolveReasonSection"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Why can't you resolve it?"
+        android:visibility="gone" />
+
+    <EditText
+        android:id="@+id/resolveReasonInput"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter reason here"
+        android:visibility="gone" />
+
+    <EditText
+        android:id="@+id/expectedResolutionTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:hint="Expected Resolution Time"
+        android:visibility="gone" />
+
+</LinearLayout>

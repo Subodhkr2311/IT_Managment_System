@@ -1,0 +1,38 @@
+<!-- res/layout/item_requirement_admin.xml -->
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_margin="8dp"
+    android:elevation="4dp"
+    android:padding="12dp"
+    app:cardCornerRadius="8dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@drawable/admin_edittext_corner"
+        android:paddingStart="15dp"
+        android:padding="5dp">
+
+        <TextView
+            android:id="@+id/itemNameTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Item Name"
+            android:textSize="18sp"
+
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/itemDetailsTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Count: 10\nLocation: Office\nFrom: Jan 5, 2024, 10:00 AM\nTo: Jan 6, 2024, 5:00 PM"
+            android:textSize="14sp"
+
+            android:layout_marginTop="8dp" />
+
+    </LinearLayout>
+</androidx.cardview.widget.CardView>

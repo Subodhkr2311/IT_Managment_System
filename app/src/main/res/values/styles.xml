@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Chip Style -->
+    <style name="CustomChipChoice" parent="Widget.MaterialComponents.Chip.Choice">
+        <item name="chipStrokeWidth">1dp</item>
+        <item name="chipStrokeColor">@color/chip_stroke_color</item>
+        <item name="chipBackgroundColor">@color/chip_background_color</item>
+        <item name="android:textColor">@color/chip_text_color</item>
+        <item name="rippleColor">#DEB7C8</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+    <!-- Dialog theme -->
+    <style name="MyDialogTheme" parent="Theme.MaterialComponents.Dialog">
+        <item name="backgroundColor">@color/transparent</item>
+        <item name="android:windowBackground">@color/transparent</item>
+    </style>
+
+    <!-- Dialog Animation -->
+    <style name="MyDialogAnimation">
+        <item name="android:windowEnterAnimation">@anim/dialog_animation</item>
+        <item name="android:windowExitAnimation">@anim/dialog_animation</item>
+    </style>
+</resources>

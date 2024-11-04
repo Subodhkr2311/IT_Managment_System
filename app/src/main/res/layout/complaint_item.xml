@@ -1,0 +1,84 @@
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_margin="16dp"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="4dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:background="@drawable/admin_edittext_corner">
+
+        <!-- Title -->
+        <TextView
+            android:id="@+id/complaint_TitleS"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Title"
+            android:textStyle="bold"
+            android:textSize="18sp"
+            android:textAppearance="?attr/textAppearanceHeadline6"
+            android:textColor="?attr/colorPrimary" />
+
+        <!-- Divider Line -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="?attr/colorOnSurface"
+            android:layout_marginVertical="8dp" />
+
+        <!-- Description -->
+        <TextView
+            android:id="@+id/complaint_DescriptionS"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Description"
+            android:textSize="14sp"
+            android:textAppearance="?attr/textAppearanceBody1"
+            android:layout_marginBottom="8dp"
+            android:visibility="gone"/>
+
+        <!-- Status -->
+        <TextView
+            android:id="@+id/complaint_StatuS"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Status"
+            android:textAppearance="?attr/textAppearanceBody2"
+            android:layout_marginBottom="4dp"
+            android:textColor="?attr/colorOnSurface" />
+
+        <!-- Date and Location horizontally aligned -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <!-- Location aligned to the left -->
+            <TextView
+                android:id="@+id/complaint_location"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Location"
+                android:textAppearance="?attr/textAppearanceBody2"
+                android:textColor="?attr/colorOnSurface"
+                android:gravity="start"/>
+
+            <!-- Date aligned to the right -->
+            <TextView
+                android:id="@+id/complaint_DateS"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Date"
+                android:textAppearance="?attr/textAppearanceBody2"
+                android:textColor="?attr/colorOnSurface"
+                android:gravity="end"/>
+        </LinearLayout>
+    </LinearLayout>
+</androidx.cardview.widget.CardView>

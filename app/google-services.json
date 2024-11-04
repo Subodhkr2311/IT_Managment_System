@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "593562669278",
+    "project_id": "it-management-system-2a2e2",
+    "storage_bucket": "it-management-system-2a2e2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:593562669278:android:0fea2eee50b24be368724f",
+        "android_client_info": {
+          "package_name": "com.example.it_management_system"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCXMxRdMVy68BFG3b5FO1e7184uzwX-ijg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

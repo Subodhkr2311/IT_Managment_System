@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="5dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:background="@color/white"
+        android:layout_gravity="center_horizontal"
+        android:elevation="4dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginBottom="16dp"
+            >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Location"
+                android:textSize="16sp"
+                android:textColor="#555555"
+                android:layout_marginBottom="8dp"
+                />
+
+            <Spinner
+                android:id="@+id/location_spinnerAdmin"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@drawable/admin_edittext_corner"
+                />
+        </LinearLayout>
+
+        <!-- Complaint Type Section -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginBottom="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Complaint Type"
+                android:textSize="16sp"
+                android:textColor="#555555"
+                android:layout_marginBottom="8dp"/>
+
+            <Spinner
+                android:id="@+id/complaint_type_spinnerAdmin"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@drawable/admin_edittext_corner"/>
+        </LinearLayout>
+
+        <!-- Complaint Title Section -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginBottom="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Complaint Title"
+                android:textSize="16sp"
+                android:textColor="#555555"
+                android:layout_marginBottom="8dp"/>
+
+            <Spinner
+                android:id="@+id/complaint_title_spinnerAdmin"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@drawable/admin_edittext_corner"/>
+
+            <!-- Required Time Display -->
+            <TextView
+                android:id="@+id/required_time_text_viewAdmin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"
+                android:textColor="#555555"
+                android:layout_marginTop="4dp"/>
+        </LinearLayout>
+
+        <!-- Description Section -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginBottom="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Description (Optional)"
+                android:textSize="16sp"
+                android:textColor="#555555"
+                android:layout_marginBottom="8dp"/>
+
+            <EditText
+                android:id="@+id/description_inputAdmin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Enter description"
+                android:minLines="3"
+                android:background="@drawable/admin_edittext_corner"
+                android:padding="12dp"/>
+        </LinearLayout>
+
+        <!-- Photo Upload Button -->
+        <Button
+            android:id="@+id/photo_upload_buttonAdmin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Upload Photo"
+            android:shadowColor="@color/colorAccent"
+            android:backgroundTint="#0091EA"
+            android:textColor="#FFFFFF"
+            android:layout_marginBottom="16dp"/>
+
+        <!-- ImageView to display the selected image -->
+        <ImageView
+            android:id="@+id/image_previewAdmin"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:scaleType="centerCrop"
+            android:layout_marginBottom="16dp"
+            android:visibility="gone" /> <!-- Initially hidden -->
+
+        <TextView
+            android:id="@+id/image_link_text_viewAdmin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone" /> <!-- Add a placeholder background -->
+
+        <!-- Submit Button -->
+        <Button
+            android:id="@+id/submit_buttonAdmin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Submit"
+            android:shadowColor="@color/colorPrimary"
+            android:backgroundTint="#062BFF"
+            android:textColor="#FFFFFF"/>
+    </LinearLayout>
+
+</ScrollView>

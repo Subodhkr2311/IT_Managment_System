@@ -1,0 +1,103 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="#F9F9F9">
+
+    <!-- Title -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Settings"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:textColor="#333333"
+        android:layout_marginBottom="16dp"/>
+
+    <!-- Notification Toggle -->
+    <Switch
+        android:id="@+id/switch_notifications"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Enable Notifications"
+        android:padding="12dp"
+        android:thumbTint="#FFFFFF"
+        android:trackTint="#FF9800"
+        android:layout_marginBottom="12dp"/>
+
+    <!-- Language Selection -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Language"
+        android:textSize="16sp"
+        android:textColor="#555555"
+        android:layout_marginBottom="8dp"/>
+
+    <Spinner
+        android:id="@+id/language_spinner"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@drawable/spinner_background"
+        android:padding="12dp"
+        android:layout_marginBottom="16dp"/>
+
+    <!-- Theme Selection -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Theme"
+        android:textSize="16sp"
+        android:textColor="#555555"
+        android:layout_marginBottom="8dp"/>
+
+    <RadioGroup
+        android:id="@+id/theme_radio_group"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp">
+
+        <RadioButton
+            android:id="@+id/radio_light"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Light"
+            android:layout_marginEnd="16dp"/>
+
+        <RadioButton
+            android:id="@+id/radio_dark"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Dark"/>
+    </RadioGroup>
+
+    <!-- Feedback Section -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Feedback"
+        android:textSize="16sp"
+        android:textColor="#555555"
+        android:layout_marginBottom="8dp"/>
+
+    <Button
+        android:id="@+id/button_feedback"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Give Feedback"
+        android:backgroundTint="#FF9800"
+        android:textColor="#FFFFFF"
+        android:padding="12dp"
+        android:layout_marginBottom="16dp"/>
+
+    <!-- Logout Button -->
+    <Button
+        android:id="@+id/button_logout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Logout"
+        android:backgroundTint="#FF3D00"
+        android:textColor="#FFFFFF"
+        android:padding="12dp"/>
+</LinearLayout>

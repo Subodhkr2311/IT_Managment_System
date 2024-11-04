@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".UserDashboard">
+
+    <!-- Toolbar -->
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbarUser"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="#2962FF"
+        app:title=""
+        android:elevation="4dp">
+
+        <!-- TextView for Title -->
+        <TextView
+            android:id="@+id/toolbar_titleUser"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="User Dashboard"
+            android:textColor="#FFFFFF"
+            android:textSize="20sp"
+            android:layout_gravity="center"
+            android:paddingEnd="48dp" />
+
+        <!-- Notification Icon -->
+        <ImageView
+            android:id="@+id/notification_iconUser"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:src="@drawable/notificationbell"
+            android:contentDescription="Notification"
+            android:layout_gravity="end"
+            android:padding="16dp"
+            app:tint="#FFFFFF" />
+
+        <!-- Badge for Notification Count -->
+        <TextView
+            android:id="@+id/notification_countUser"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/empty"
+            android:text="0"
+            android:textColor="#FFFFFF"
+            android:textSize="12sp"
+            android:paddingHorizontal="6dp"
+            android:paddingVertical="2dp"
+            android:layout_gravity="end|top"
+            android:layout_marginEnd="24dp"
+            android:layout_marginTop="8dp"
+            android:visibility="gone"/> <!-- Initially hidden -->
+
+    </com.google.android.material.appbar.MaterialToolbar>
+
+    <!-- FrameLayout to hold Fragments -->
+    <FrameLayout
+        android:id="@+id/fragment_containerUser"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <!-- Bottom Navigation View -->
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottom_navigationUser"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#EFEDED"
+        android:elevation="20dp"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        app:itemRippleColor="#2962FF"
+        app:menu="@menu/usermenu" />
+
+</LinearLayout>

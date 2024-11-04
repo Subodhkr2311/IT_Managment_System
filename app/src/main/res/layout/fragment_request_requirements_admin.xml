@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="10dp"
+    android:background="@color/background_color">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:background="@color/white"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
+        android:layout_gravity="center_horizontal"
+        android:elevation="8dp"
+        android:clipToPadding="false">
+
+        <!-- Section for Raising Requirements -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Request Requirements"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:layout_marginBottom="20dp"/>
+
+        <EditText
+            android:id="@+id/itemEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Item Name"
+            android:background="@drawable/admin_edittext_corner"
+            android:padding="14dp"
+            android:textColor="@color/text_color"/>
+
+        <EditText
+            android:id="@+id/itemCountEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Item Count"
+            android:inputType="number"
+            android:background="@drawable/admin_edittext_corner"
+            android:padding="14dp"
+            android:layout_marginTop="12dp"
+            android:textColor="@color/text_color"/>
+
+        <EditText
+            android:id="@+id/locationEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Location"
+            android:background="@drawable/admin_edittext_corner"
+            android:padding="14dp"
+            android:layout_marginTop="12dp"
+            android:textColor="@color/text_color"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="From Date and Time"
+            android:textColor="@color/black"
+            android:layout_marginTop="20dp"/>
+
+        <EditText
+            android:id="@+id/fromDateTimeEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:focusable="false"
+            android:hint="Select Date and Time"
+            android:background="@drawable/admin_edittext_corner"
+            android:padding="14dp"
+            android:textColor="@color/text_color"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="To Date and Time"
+            android:textColor="@color/black"
+            android:layout_marginTop="20dp"/>
+
+        <EditText
+            android:id="@+id/toDateTimeEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:focusable="false"
+            android:hint="Select Date and Time"
+            android:background="@drawable/admin_edittext_corner"
+            android:padding="14dp"
+            android:textColor="@color/text_color"/>
+
+        <Button
+            android:id="@+id/submitRequirementButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Submit Requirement"
+            android:backgroundTint="#304FFE"
+            android:textColor="@android:color/white"
+            android:padding="14dp"
+            android:textSize="16sp"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="20dp"
+            />
+
+        <!-- Section for Requirements History -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Requirements History"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:layout_marginTop="32dp"
+            android:layout_marginBottom="12dp"
+            />
+
+
+           <androidx.recyclerview.widget.RecyclerView
+               android:id="@+id/requirementsRecyclerViewAdmin"
+               android:layout_width="match_parent"
+               android:layout_height="400dp"
+               android:divider="#2962FF"
+               android:dividerHeight="5dp"
+              />
+
+
+
+    </LinearLayout>
+</ScrollView>

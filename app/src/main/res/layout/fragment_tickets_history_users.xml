@@ -1,0 +1,94 @@
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:padding="16dp"
+    android:background="@color/white">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/materialCardView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="8dp"
+        app:cardElevation="4dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+     >
+
+        <androidx.appcompat.widget.SearchView
+            android:id="@+id/search_View"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/admin_edittext_corner"
+            android:iconifiedByDefault="false"
+            android:queryHint="Search tickets..."
+            android:textColorHint="?attr/colorOnSurface"
+          />
+
+    </androidx.cardview.widget.CardView>
+
+    <!-- Modern RadioGroup for Filters with material radio buttons -->
+
+
+    <!-- RecyclerView for listing tickets -->
+    <RadioGroup
+        android:id="@+id/filter_Radio_group"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:gravity="center"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/materialCardView">
+
+        <!-- Material RadioButtons with modern look -->
+        <com.google.android.material.radiobutton.MaterialRadioButton
+            android:id="@+id/filter_All"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:text="All"
+            android:textAppearance="?attr/textAppearanceBody1" />
+
+        <com.google.android.material.radiobutton.MaterialRadioButton
+            android:id="@+id/filter_Pending"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:text="Pending"
+            android:textAppearance="?attr/textAppearanceBody1" />
+
+        <com.google.android.material.radiobutton.MaterialRadioButton
+            android:id="@+id/filter_Resolved"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:text="Resolved"
+            android:textAppearance="?attr/textAppearanceBody1" />
+
+        <com.google.android.material.radiobutton.MaterialRadioButton
+            android:id="@+id/filter_Recent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Recent"
+            android:textAppearance="?attr/textAppearanceBody1" />
+
+    </RadioGroup>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_View"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:clipToPadding="false"
+        android:paddingTop="8dp"
+
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/filter_Radio_group" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
