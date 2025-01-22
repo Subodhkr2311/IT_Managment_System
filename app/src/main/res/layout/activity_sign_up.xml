@@ -144,5 +144,5 @@
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginTop="20dp" />
 
-    >
+    
 </androidx.constraintlayout.widget.ConstraintLayout>
