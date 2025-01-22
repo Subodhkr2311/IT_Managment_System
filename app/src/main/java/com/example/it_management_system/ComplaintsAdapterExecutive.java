@@ -16,6 +16,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -219,4 +220,5 @@ public class ComplaintsAdapterExecutive extends RecyclerView.Adapter<ComplaintsA
         Toast.makeText(context, "Congratulations! Ticket resolved successfully!", Toast.LENGTH_SHORT).show();
         // You can replace this Toast with an actual animation or dialog
     }
+
 }

@@ -6,6 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:fitsSystemWindows="true"
+
     tools:context=".AdminDashboard">
 
     <!-- Toolbar -->
@@ -53,8 +55,9 @@
         android:id="@+id/bottom_navigationAdmin"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#EFEDED"
+        android:background="@color/transparent"
         android:elevation="20dp"
+        app:itemIconTint="#2979FF"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         app:itemRippleColor="#2962FF"
         app:menu="@menu/adminmenu" />

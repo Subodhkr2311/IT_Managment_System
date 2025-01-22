@@ -17,6 +17,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import com.google.mlkit.nl.translate.Translator;
+import android.widget.RadioButton;
 
 public class SettingUserFragment extends Fragment {
 
@@ -76,9 +78,10 @@ public class SettingUserFragment extends Fragment {
             editor.putString("selected_theme", selectedTheme);
             editor.apply();
 
-            // Restart activity to apply the theme change
-            getActivity().recreate();
+            // Restart the activity to apply theme changes
+            requireActivity().recreate();
         });
+
 
         return view;
     }

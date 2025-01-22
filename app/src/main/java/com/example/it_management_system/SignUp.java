@@ -69,7 +69,7 @@ public class SignUp extends AppCompatActivity {
         });
     }
     private boolean isValidDomain(String email) {
-        return email.endsWith("@gdgu.org") || email.endsWith("@gdgoenka.ac.in") || email.endsWith("@gdgoenka.com");
+        return email.endsWith("@gdgu.org") || email.endsWith("@gdgoenka.ac.in") || email.endsWith("@gdgoenka.com")|| email.endsWith("@gmail.com");
     }
 
 

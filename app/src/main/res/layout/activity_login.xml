@@ -67,22 +67,24 @@
         android:layout_marginTop="20dp"
         app:boxStrokeColor="#2891D9"
         app:boxBackgroundColor="@color/white"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/usernameInputLayout"
-        android:layout_marginStart="32dp"
-        android:layout_marginEnd="32dp"
-        android:hint="Password">
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/passwordEditText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColorHint="#D3D3D3"
-            android:padding="15dp"
-            android:inputType="textPassword" >
+        app:endIconMode="password_toggle"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintTop_toBottomOf="@id/usernameInputLayout"
+    android:layout_marginStart="32dp"
+    android:layout_marginEnd="32dp"
+    android:hint="Password">
 
-        </com.google.android.material.textfield.TextInputEditText>
-    </com.google.android.material.textfield.TextInputLayout>
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/passwordEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColorHint="#D3D3D3"
+        android:padding="15dp"
+        android:inputType="textPassword" />
+
+</com.google.android.material.textfield.TextInputLayout>
+
 
     <!-- Forgot Password -->
     <TextView

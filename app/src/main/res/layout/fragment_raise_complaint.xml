@@ -28,7 +28,7 @@
                 android:id="@+id/introduction_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Welcome to IT Management System"
+                android:text="Welcome to CivicConnect"
                 android:textSize="22sp"
                 android:textColor="#333333"
                 android:textStyle="bold"
@@ -39,7 +39,7 @@
                 android:id="@+id/introduction_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="This application helps you manage your IT-related issues. You can raise complaints, track them, and get help efficiently."
+                android:text="This app empowers residents to report and track civic issues, ensuring timely responses and accountability. It enhances the quality of life and promotes environmental sustainability by addressing sanitation, sewage, waste management, and environmental hazards efficiently."
                 android:textSize="16sp"
                 android:textColor="#3F5FBA"
                 android:layout_marginBottom="8dp"/>
