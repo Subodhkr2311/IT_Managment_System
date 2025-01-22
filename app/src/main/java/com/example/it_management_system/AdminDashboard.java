@@ -1,6 +1,7 @@
 package com.example.it_management_system;
 
 import android.os.Bundle;
+import android.view.View;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -17,6 +18,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 public class AdminDashboard extends AppCompatActivity {
     private BottomNavigationView bottomNavigationView;
     private FragmentManager fragmentManager;
+    private View fragmentContainer;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,27 +35,34 @@ public class AdminDashboard extends AppCompatActivity {
         // Set up Bottom Navigation
         bottomNavigationView = findViewById(R.id.bottom_navigationAdmin);
         fragmentManager = getSupportFragmentManager();
+        fragmentContainer = findViewById(R.id.fragment_containerAdmin);
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+            Insets imeInsets = insets.getInsets(WindowInsetsCompat.Type.ime());
+            boolean isKeyboardVisible = imeInsets.bottom > 0;
 
-        // Set default fragment on dashboard load
+
+            bottomNavigationView.setVisibility(isKeyboardVisible ? View.GONE : View.VISIBLE);
+            return insets;
+        });
+
         if (savedInstanceState == null) {
-            // Set the initial fragment (like DashboardFragment)
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
             fragmentTransaction.replace(R.id.fragment_containerAdmin, new HomeAdminFragment());
             fragmentTransaction.commit();
         }
 
-        // Set Bottom Navigation item select listener
+
         bottomNavigationView.setOnItemSelectedListener(item -> {
             Fragment selectedFragment = null;
 
             int itemId = item.getItemId();
-            if (itemId == R.id.nav_homeAdmin) {  // Example menu item
+            if (itemId == R.id.nav_homeAdmin) {
                 selectedFragment = new HomeAdminFragment();
-            } else if (itemId == R.id.nav_ticketsAdmin) {  // Example menu item
+            } else if (itemId == R.id.nav_ticketsAdmin) {
                 selectedFragment = new TicketAdminFragment();
-            } else if (itemId == R.id.nav_executives) {  // Example menu item
+            } else if (itemId == R.id.nav_executives) {
                 selectedFragment = new ExecutivesListAdminFragment();
-            } else {  // Example menu item
+            } else {
                 selectedFragment = new SettingAdminFragment();
             }
 

@@ -6,6 +6,8 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:background="@color/white"
     tools:context=".ExecutiveDashboard">
 
     <com.google.android.material.appbar.AppBarLayout
@@ -23,16 +25,16 @@
             android:background="#2962FF"
             app:title="Executive Dashboard"
             app:titleCentered="true"
-            app:titleTextColor="@color/white" >
+            app:titleTextColor="@color/white">
             <!-- Notification Icon -->
             <ImageView
                 android:id="@+id/notification_iconExecutive"
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
-                android:src="@drawable/notificationbell"
-                android:contentDescription="Notification"
                 android:layout_gravity="end"
+                android:contentDescription="Notification"
                 android:padding="16dp"
+                android:src="@drawable/notificationbell"
                 app:tint="#FFFFFF" />
         </com.google.android.material.appbar.MaterialToolbar>
 
@@ -45,7 +47,9 @@
         app:layout_constraintTop_toBottomOf="@id/appBarLayout"
         app:layout_constraintBottom_toTopOf="@id/bottom_navigationExecutive"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+
+        android:background="@color/white"/>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_navigationExecutive"

@@ -12,7 +12,8 @@ import java.util.Locale;
 
 
 public class Complaints {
-
+    private String translatedTitle;
+    private String translatedDescription;
      // Use long for timestamp to represent milliseconds since epoch
         private String photoUrl;
         private String id;
@@ -180,6 +181,21 @@ public class Complaints {
     public List<JourneyEvent> getTicketJourney() {
         return ticketJourney;
     }
+    public String getTranslatedTitle() {
+        return translatedTitle != null ? translatedTitle : getTitle();
+    }
+
+    public void setTranslatedTitle(String translatedTitle) {
+        this.translatedTitle = translatedTitle;
+    }
+
+    public String getTranslatedDescription() {
+        return translatedDescription != null ? translatedDescription : getDescription();
+    }
+
+    public void setTranslatedDescription(String translatedDescription) {
+        this.translatedDescription = translatedDescription;
+    }
 
     public static class JourneyEvent {
         public String event;
@@ -198,6 +214,7 @@ public class Complaints {
         public String getTimestamp() {
             return timestamp;
         }
+
     }
     // Helper method to convert timestamp to date string
     private String convertTimestampToDate(long timestamp) {

@@ -28,22 +28,33 @@ public class ComplaintAdapter extends RecyclerView.Adapter<ComplaintAdapter.Comp
         return new ComplaintViewHolder(view);
     }
 
-
     @Override
     public void onBindViewHolder(@NonNull ComplaintViewHolder holder, int position) {
         Complaints complaint = complaintList.get(position);
         Log.d("ComplaintAdapter", "Binding complaint: " + complaint.getTitle());
 
-        holder.title.setText(complaint.getTitle() != null ? complaint.getTitle() : "No Title");
-        if (complaint.getDescription() == null || complaint.getDescription().isEmpty()) {
+        // Use translated title if available, otherwise use original title
+        String titleText = complaint.getTranslatedTitle() != null ?
+                complaint.getTranslatedTitle() :
+                (complaint.getTitle() != null ? complaint.getTitle() : "No Title");
+        holder.title.setText(titleText);
+
+        // Use translated description if available, otherwise use original description
+        String descriptionText = complaint.getTranslatedDescription() != null ?
+                complaint.getTranslatedDescription() :
+                complaint.getDescription();
+
+        if (descriptionText == null || descriptionText.isEmpty()) {
             holder.description.setVisibility(View.GONE); // Hide if no description
         } else {
-            holder.description.setText(complaint.getDescription());
+            holder.description.setText(descriptionText);
             holder.description.setVisibility(View.VISIBLE); // Show if description exists
         }
+
         holder.status.setText(complaint.getStatus() != null ? complaint.getStatus() : "Status Unknown");
         holder.date.setText(complaint.getDate() != null ? complaint.getDate() : "No Date");
         holder.location.setText(complaint.getLocation() != null ? complaint.getLocation() : "No Location");
+
         // Show journey dialog on item click
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -51,8 +62,8 @@ public class ComplaintAdapter extends RecyclerView.Adapter<ComplaintAdapter.Comp
                 showJourneyDialog(holder.itemView.getContext(), complaint.getTicketJourney());
             }
         });
-
     }
+
     @Override
     public int getItemCount() {
         return complaintList != null ? complaintList.size() : 0;
@@ -75,17 +86,12 @@ public class ComplaintAdapter extends RecyclerView.Adapter<ComplaintAdapter.Comp
             location = itemView.findViewById(R.id.complaint_location);
         }
     }
-    private void showJourneyDialog(Context context, List<Complaints.JourneyEvent> journeyEvents) {
-        // Create a dialog
-        Dialog dialog = new Dialog(context);
 
-        // Ensure dialog is using the correct layout
+    private void showJourneyDialog(Context context, List<Complaints.JourneyEvent> journeyEvents) {
+        Dialog dialog = new Dialog(context);
         dialog.setContentView(R.layout.dialog_ticket_journey_user);
 
-        // Ensure we are accessing the RecyclerView after setting the content view
         RecyclerView recyclerView = dialog.findViewById(R.id.recycler_journey_events_user);
-
-        // Null check to avoid potential errors
         if (recyclerView != null) {
             JourneyEventAdapterUser adapter = new JourneyEventAdapterUser(journeyEvents);
             recyclerView.setAdapter(adapter);
@@ -94,7 +100,6 @@ public class ComplaintAdapter extends RecyclerView.Adapter<ComplaintAdapter.Comp
             Log.e("JourneyDialog", "RecyclerView is null. Please check your layout and ID reference.");
         }
 
-        // Close button null check
         Button closeButton = dialog.findViewById(R.id.close_button_user);
         if (closeButton != null) {
             closeButton.setOnClickListener(v -> dialog.dismiss());
@@ -102,9 +107,6 @@ public class ComplaintAdapter extends RecyclerView.Adapter<ComplaintAdapter.Comp
             Log.e("JourneyDialog", "Close button is null. Please check your layout and ID reference.");
         }
 
-        // Show the dialog
         dialog.show();
     }
-
-
 }

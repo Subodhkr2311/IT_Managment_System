@@ -25,6 +25,8 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import com.google.mlkit.nl.translate.Translator;
+import android.widget.RadioButton;
 
 public class TicketsHistoryUsersFragment extends Fragment {
     private static final String TAG = "TicketsHistoryUsers";
@@ -155,5 +157,61 @@ public class TicketsHistoryUsersFragment extends Fragment {
                 (complaint.getDescription() != null && complaint.getDescription().toLowerCase().contains(query)) ||
                 (complaint.getLocation() != null && complaint.getLocation().toLowerCase().contains(query)) ||
                 (complaint.getDate() != null && complaint.getDate().toLowerCase().contains(query));
+    }
+    // Add these methods to your existing TicketsHistoryUsersFragment class
+
+    public void translateToHindi(Translator englishHindiTranslator) {
+        // Translate search hint
+        englishHindiTranslator.translate(searchView.getQuery().toString())
+                .addOnSuccessListener(translatedText -> searchView.setQuery(translatedText, false));
+
+        // Translate radio button text
+        for (int i = 0; i < filterRadioGroup.getChildCount(); i++) {
+            if (filterRadioGroup.getChildAt(i) instanceof RadioButton) {
+                RadioButton radioButton = (RadioButton) filterRadioGroup.getChildAt(i);
+                String originalText = radioButton.getText().toString();
+                radioButton.setTag(originalText); // Store original text for reset
+                englishHindiTranslator.translate(originalText)
+                        .addOnSuccessListener(translatedText -> radioButton.setText(translatedText));
+            }
+        }
+
+        // Translate complaint items in the list
+        for (Complaints complaint : complaintList) {
+            englishHindiTranslator.translate(complaint.getTitle())
+                    .addOnSuccessListener(translatedText -> {
+                        complaint.setTranslatedTitle(translatedText);
+                        complaintAdapter.notifyDataSetChanged();
+                    });
+
+            englishHindiTranslator.translate(complaint.getDescription())
+                    .addOnSuccessListener(translatedText -> {
+                        complaint.setTranslatedDescription(translatedText);
+                        complaintAdapter.notifyDataSetChanged();
+                    });
+        }
+    }
+
+    public void resetToEnglish() {
+        // Reset search view
+        searchView.setQuery("", false);
+        searchView.setQueryHint("Search complaints");
+
+        // Reset radio buttons to original English text
+        for (int i = 0; i < filterRadioGroup.getChildCount(); i++) {
+            if (filterRadioGroup.getChildAt(i) instanceof RadioButton) {
+                RadioButton radioButton = (RadioButton) filterRadioGroup.getChildAt(i);
+                if (radioButton.getTag() != null) {
+                    radioButton.setText((String) radioButton.getTag());
+                }
+            }
+        }
+
+        // Reset complaints to original English text
+        for (Complaints complaint : complaintList) {
+            complaint.setTranslatedTitle(null);
+            complaint.setTranslatedDescription(null);
+        }
+        complaintAdapter.notifyDataSetChanged();
     }
 }

@@ -7,6 +7,7 @@ import android.view.WindowManager;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.core.view.WindowInsetsControllerCompat;
@@ -27,22 +28,30 @@ public class ExecutiveDashboard extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_executive_dashboard);
 
-        // Set up edge-to-edge content
         setupEdgeToEdge();
 
-        // Initialize the toolbar
+
         MaterialToolbar toolbar = findViewById(R.id.toolbarExecutive);
         setSupportActionBar(toolbar);
 
-        // Set up Bottom Navigation
         bottomNavigationView = findViewById(R.id.bottom_navigationExecutive);
         fragmentManager = getSupportFragmentManager();
+        View fragmentContainer = findViewById(R.id.fragment_containerExecutive);
 
-        // Set default fragment on dashboard load
         if (savedInstanceState == null) {
             loadFragment(new HomeExecutiveFragment());
         }
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+            int imeVisible = insets.isVisible(WindowInsetsCompat.Type.ime()) ? View.GONE : View.VISIBLE;
+            Insets imeInsets = insets.getInsets(WindowInsetsCompat.Type.ime());
+            Insets systemInsets = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            boolean isKeyboardVisible = imeInsets.bottom > 0;
 
+            bottomNavigationView.setVisibility(imeVisible);
+            int bottomPadding = isKeyboardVisible ? imeInsets.bottom : systemInsets.bottom;
+            fragmentContainer.setPadding(0, 0, 0, bottomPadding);
+            return insets;
+        });
         // Set Bottom Navigation item select listener
         bottomNavigationView.setOnItemSelectedListener(item -> {
             Fragment selectedFragment = null;
@@ -67,13 +76,12 @@ public class ExecutiveDashboard extends AppCompatActivity {
         WindowInsetsControllerCompat windowInsetsController =
                 ViewCompat.getWindowInsetsController(getWindow().getDecorView());
         if (windowInsetsController != null) {
-            // Configure the behavior of the hidden system bars
             windowInsetsController.setSystemBarsBehavior(
                     WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
             );
         }
 
-        // Make the content appear behind the system bars
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, windowInsets) -> {
             v.setPadding(0, windowInsets.getInsets(WindowInsetsCompat.Type.statusBars()).top, 0, 0);
             return WindowInsetsCompat.CONSUMED;

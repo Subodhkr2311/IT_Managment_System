@@ -172,5 +172,4 @@ public class tabComplaintsExecutive extends Fragment {
         complaintRef.child("ticketJourney").setValue(complaint.getTicketJourney());
     }
 
-
 }

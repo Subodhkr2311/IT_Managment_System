@@ -83,7 +83,7 @@ public class loginActivity extends AppCompatActivity {
         });
     }
     private boolean isValidDomain(String email) {
-        return email.endsWith("@gdgu.org") || email.endsWith("@gdgoenka.ac.in") || email.endsWith("@gdgoenka.com");
+        return email.endsWith("@gdgu.org") || email.endsWith("@gdgoenka.ac.in") || email.endsWith("@gdgoenka.com")|| email.endsWith("@gmail.com");
     }
 
     // Login user and check role from Firebase Realtime Database
@@ -92,17 +92,23 @@ public class loginActivity extends AppCompatActivity {
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         FirebaseUser firebaseUser = mAuth.getCurrentUser();
-                        if (firebaseUser != null && firebaseUser.isEmailVerified()) {
-                            // Check user role from Firebase Realtime Database
-                            checkUserRole(firebaseUser.getUid(), email);
+                        if (firebaseUser != null) {
+                            if (firebaseUser.isEmailVerified()) {
+                                // Check user role only if email is verified
+                                checkUserRole(firebaseUser.getUid(), email);
+                            } else {
+                                Toast.makeText(loginActivity.this, "Please verify your email before logging in.", Toast.LENGTH_SHORT).show();
+                                mAuth.signOut(); // Log the user out if email is not verified
+                            }
                         } else {
-                            Toast.makeText(loginActivity.this, "Please verify your email before logging in.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(loginActivity.this, "Error: User not found.", Toast.LENGTH_SHORT).show();
                         }
                     } else {
                         Toast.makeText(loginActivity.this, "Login failed: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
     }
+
 
     // Check user role and redirect to appropriate dashboard
     private void checkUserRole(String userId, String email) {

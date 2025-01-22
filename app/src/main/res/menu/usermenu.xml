@@ -11,7 +11,8 @@
     <item
         android:id="@+id/nav_profileUser"
         android:icon="@drawable/requirement"
-        android:title="Requirements" />
+        android:title="Requirements"
+        />
     <item
         android:id="@+id/nav_settingsUser"
         android:icon="@drawable/setting"
