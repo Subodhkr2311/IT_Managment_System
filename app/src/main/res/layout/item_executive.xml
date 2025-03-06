@@ -17,13 +17,13 @@
         android:padding="16dp">
 
         <TextView
-            android:id="@+id/executive_name"
+            android:id="@+id/tvExecutiveNameItem"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?attr/textAppearanceHeadline6" />
 
         <TextView
-            android:id="@+id/executive_email"
+            android:id="@+id/tvExecutiveEmailItem"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?attr/textAppearanceBody2" />

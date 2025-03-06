@@ -17,8 +17,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import com.google.mlkit.nl.translate.Translator;
-import android.widget.RadioButton;
+
 
 public class SettingUserFragment extends Fragment {
 

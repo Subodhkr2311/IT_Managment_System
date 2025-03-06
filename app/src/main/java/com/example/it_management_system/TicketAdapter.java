@@ -4,11 +4,10 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.chip.Chip;
@@ -22,14 +21,64 @@ public class TicketAdapter extends RecyclerView.Adapter<TicketAdapter.TicketView
     private List<Complaints> filteredList;
     private OnTicketClickListener listener;
 
+    // Fields for multi‑select support
+    private boolean selectionMode = false;
+    private List<Complaints> selectedComplaints = new ArrayList<>();
+    private OnSelectionChangedListener selectionListener;
+
     public interface OnTicketClickListener {
+        // Callback for normal item click (when not in selection mode)
         void onTicketClick(Complaints complaint);
     }
 
+    public interface OnSelectionChangedListener {
+        void onSelectionChanged(int count);
+    }
+
     public TicketAdapter(List<Complaints> complaintsList, OnTicketClickListener listener) {
-        this.complaintsList = complaintsList != null ? complaintsList : new ArrayList<>();
+        this.complaintsList = (complaintsList != null) ? complaintsList : new ArrayList<>();
         this.filteredList = new ArrayList<>(this.complaintsList);
         this.listener = listener;
+    }
+
+    public void setOnSelectionChangedListener(OnSelectionChangedListener listener) {
+        this.selectionListener = listener;
+    }
+
+    // Methods to control selection mode
+    public void enableSelectionMode() {
+        selectionMode = true;
+        selectedComplaints.clear();
+        notifyDataSetChanged();
+    }
+
+    public void disableSelectionMode() {
+        selectionMode = false;
+        selectedComplaints.clear();
+        notifyDataSetChanged();
+        if (selectionListener != null) {
+            selectionListener.onSelectionChanged(0);
+        }
+    }
+
+    public boolean isSelectionMode() {
+        return selectionMode;
+    }
+
+    public List<Complaints> getSelectedComplaints() {
+        return selectedComplaints;
+    }
+
+    public void toggleSelection(Complaints complaint) {
+        if (selectedComplaints.contains(complaint)) {
+            selectedComplaints.remove(complaint);
+        } else {
+            selectedComplaints.add(complaint);
+        }
+        notifyDataSetChanged();
+        if (selectionListener != null) {
+            selectionListener.onSelectionChanged(selectedComplaints.size());
+        }
     }
 
     @NonNull
@@ -45,16 +94,23 @@ public class TicketAdapter extends RecyclerView.Adapter<TicketAdapter.TicketView
             Complaints complaint = filteredList.get(position);
             if (complaint != null) {
                 holder.bind(complaint);
+                // Show selection indicator when in selection mode
+                if (selectionMode) {
+                    holder.selectionIndicator.setVisibility(selectedComplaints.contains(complaint) ? View.VISIBLE : View.GONE);
+                } else {
+                    holder.selectionIndicator.setVisibility(View.GONE);
+                }
             }
         }
     }
 
     @Override
     public int getItemCount() {
-        return filteredList != null ? filteredList.size() : 0;
+        return (filteredList != null) ? filteredList.size() : 0;
     }
+
     public void updateList(List<Complaints> newList) {
-        complaintsList = newList != null ? new ArrayList<>(newList) : new ArrayList<>();
+        complaintsList = (newList != null) ? new ArrayList<>(newList) : new ArrayList<>();
         filteredList = new ArrayList<>(complaintsList);
         notifyDataSetChanged();
     }
@@ -86,17 +142,16 @@ public class TicketAdapter extends RecyclerView.Adapter<TicketAdapter.TicketView
         }
         notifyDataSetChanged();
     }
-    // ... (keep existing updateList and filter methods)
 
     class TicketViewHolder extends RecyclerView.ViewHolder {
         TextView titleTextView, emailTextView, dateTimeTextView, locationTextView;
         Chip statusChip;
         TextView assignedToTextView;
+        ImageView selectionIndicator;
         Context context;
 
         TicketViewHolder(View itemView) {
             super(itemView);
-            // Initialize context from itemView
             context = itemView.getContext();
 
             titleTextView = itemView.findViewById(R.id.ticket_title);
@@ -105,23 +160,29 @@ public class TicketAdapter extends RecyclerView.Adapter<TicketAdapter.TicketView
             locationTextView = itemView.findViewById(R.id.ticket_location);
             statusChip = itemView.findViewById(R.id.ticket_status);
             assignedToTextView = itemView.findViewById(R.id.ticket_assigned_to);
+            selectionIndicator = itemView.findViewById(R.id.selection_indicator);
 
+            // Normal click
             itemView.setOnClickListener(v -> {
                 int position = getAdapterPosition();
                 if (position != RecyclerView.NO_POSITION && position < filteredList.size()) {
                     Complaints complaint = filteredList.get(position);
-                    if ("Resolved".equals(complaint.getStatus())) {
-                        showCannotAssignDialog();
+                    if (selectionMode) {
+                        TicketAdapter.this.toggleSelection(complaint);
                     } else {
                         listener.onTicketClick(complaint);
                     }
                 }
             });
 
+            // Long press starts selection mode
             itemView.setOnLongClickListener(v -> {
                 int position = getAdapterPosition();
                 if (position != RecyclerView.NO_POSITION && position < filteredList.size()) {
-                    showJourneyDialog(filteredList.get(position));
+                    if (!selectionMode) {
+                        TicketAdapter.this.enableSelectionMode();
+                    }
+                    TicketAdapter.this.toggleSelection(filteredList.get(position));
                     return true;
                 }
                 return false;
@@ -143,36 +204,6 @@ public class TicketAdapter extends RecyclerView.Adapter<TicketAdapter.TicketView
             } else {
                 assignedToTextView.setVisibility(View.GONE);
             }
-        }
-
-        private void showJourneyDialog(Complaints complaint) {
-            // Create custom dialog layout
-            View dialogView = LayoutInflater.from(context).inflate(R.layout.journey_recycler_view_admin, null);
-            RecyclerView journeyRecyclerView = dialogView.findViewById(R.id.journey_recycler_view_admin);
-            TextView titleView = dialogView.findViewById(R.id.journey_title_admin);
-
-            // Set up RecyclerView
-            journeyRecyclerView.setLayoutManager(new LinearLayoutManager(context));
-            List<Complaints.JourneyEvent> journeyEvents = complaint.getTicketJourney();
-            JourneyAdapterAdmin journeyAdapter = new JourneyAdapterAdmin(journeyEvents);
-            journeyRecyclerView.setAdapter(journeyAdapter);
-
-            // Create and show dialog
-            AlertDialog.Builder builder = new AlertDialog.Builder(context)
-                    .setTitle("Ticket Journey")
-                    .setView(dialogView)
-                    .setPositiveButton("Close", (dialog, which) -> dialog.dismiss());
-
-            AlertDialog dialog = builder.create();
-            dialog.show();
-        }
-        private void showCannotAssignDialog() {
-            new MaterialAlertDialogBuilder(context)
-                    .setTitle("Cannot Assign")
-                    .setMessage("This ticket has already been resolved and cannot be assigned.")
-                    .setPositiveButton("OK", (dialog, which) -> dialog.dismiss())
-                    .setBackground(context.getResources().getDrawable(R.drawable.edit_text_background))
-                    .show();
         }
     }
 }

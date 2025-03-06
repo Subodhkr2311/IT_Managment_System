@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <!-- Ticket Title -->
+    <TextView
+        android:id="@+id/txt_ticket_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Ticket Title"
+        android:textAlignment="center"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:textStyle="bold"
+        android:layout_marginBottom="16dp" />
+
+    <!-- Journey Events List -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_journey_events"
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
+        android:background="@drawable/edit_text_background"
+        android:padding="8dp" />
+
+    <!-- Executive Actions Section -->
+    <LinearLayout
+        android:id="@+id/layout_executive_actions"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginTop="16dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Executive Actions"
+            android:textStyle="bold"
+            android:textSize="16sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="8dp">
+
+            <Button
+                android:id="@+id/btn_arriving"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Mark Arriving"
+                android:layout_marginEnd="4dp" />
+
+            <Button
+                android:id="@+id/btn_resolve"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Mark Resolved"
+                android:layout_marginStart="4dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="8dp">
+
+            <Button
+                android:id="@+id/btn_resolve_yes"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Yes, Resolved"
+                android:backgroundTint="@android:color/holo_green_dark"
+                android:layout_marginEnd="4dp" />
+
+            <Button
+                android:id="@+id/btn_resolve_no"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Not Yet"
+                android:backgroundTint="@android:color/holo_orange_dark"
+                android:layout_marginStart="4dp" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/txt_resolve_reason_label"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Why couldn't you resolve it?"
+            android:layout_marginTop="8dp" />
+
+        <EditText
+            android:id="@+id/edt_resolve_reason"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Enter reason..."
+            android:layout_marginTop="4dp"
+            android:background="@drawable/edit_text_background"
+            android:padding="8dp" />
+
+        <EditText
+            android:id="@+id/edt_expected_resolution_time"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Expected resolution time (tap to set)"
+            android:layout_marginTop="8dp"
+            android:focusable="false"
+            android:background="@drawable/edit_text_background"
+            android:padding="8dp" />
+    </LinearLayout>
+
+    <!-- User Feedback Section -->
+    <LinearLayout
+        android:id="@+id/layout_user_feedback"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginTop="16dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Your Feedback"
+            android:textStyle="bold"
+            android:textSize="16sp" />
+
+        <!-- RadioGroup for Satisfied/Not Satisfied -->
+        <RadioGroup
+            android:id="@+id/rg_satisfaction"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="8dp">
+            <RadioButton
+                android:id="@+id/rb_satisfied"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Satisfied" />
+            <RadioButton
+                android:id="@+id/rb_not_satisfied"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Not Satisfied"
+                android:layout_marginStart="16dp" />
+        </RadioGroup>
+
+        <EditText
+            android:id="@+id/edt_feedback"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Share your experience..."
+            android:layout_marginTop="8dp"
+            android:background="@drawable/edit_text_background"
+            android:padding="8dp"
+            android:minLines="3"
+            android:gravity="top" />
+
+        <Button
+            android:id="@+id/btn_submit_feedback"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Submit Feedback"
+            android:layout_marginTop="8dp"
+            android:backgroundTint="@android:color/holo_blue_dark" />
+    </LinearLayout>
+
+</LinearLayout>

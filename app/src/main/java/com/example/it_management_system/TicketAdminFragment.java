@@ -10,26 +10,27 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.view.ActionMode;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
@@ -38,7 +39,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class TicketAdminFragment extends Fragment implements TicketAdapter.OnTicketClickListener {
+public class TicketAdminFragment extends Fragment {
 
     private RecyclerView ticketsRecyclerView;
     private TextInputEditText searchEditText;
@@ -46,6 +47,9 @@ public class TicketAdminFragment extends Fragment implements TicketAdapter.OnTic
     private DatabaseReference complaintsRef;
     private List<Complaints> complaintsList;
     private TicketAdapter ticketAdapter;
+
+    // ActionMode for contextual selection UI
+    private ActionMode actionMode;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -61,6 +65,7 @@ public class TicketAdminFragment extends Fragment implements TicketAdapter.OnTic
             loadComplaints();
             setupSearchListener();
             setupFilterListener();
+            setupAdapterSelectionListener();
         } catch (Exception e) {
             Log.e(TAG, "Error initializing TicketAdminFragment", e);
             showToast("Error initializing ticket view. Please try again.");
@@ -80,7 +85,21 @@ public class TicketAdminFragment extends Fragment implements TicketAdapter.OnTic
     private void setupRecyclerView() {
         complaintsRef = FirebaseDatabase.getInstance().getReference("complaints");
         complaintsList = new ArrayList<>();
-        ticketAdapter = new TicketAdapter(complaintsList, this);
+        // For normal click, show the ticket journey Bottom Sheet
+        ticketAdapter = new TicketAdapter(complaintsList, complaint -> {
+            showJourneyBottomSheet(complaint);
+        });
+
+        // Listen for selection changes to update ActionMode title.
+        ticketAdapter.setOnSelectionChangedListener(count -> {
+            if (actionMode != null) {
+                if (count == 0) {
+                    actionMode.finish();
+                } else {
+                    actionMode.setTitle(count + " selected");
+                }
+            }
+        });
 
         ticketsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         ticketsRecyclerView.setAdapter(ticketAdapter);
@@ -105,13 +124,12 @@ public class TicketAdminFragment extends Fragment implements TicketAdapter.OnTic
                     }
                 }
 
-                // Sort complaints based on the date, checking for null values
+                // Sort complaints based on date (null dates moved to end)
                 Collections.sort(complaintsList, (c1, c2) -> {
-                    // Handle null cases explicitly
                     if (c1.getDate() == null && c2.getDate() == null) return 0;
-                    if (c1.getDate() == null) return 1;  // Move nulls to the end
-                    if (c2.getDate() == null) return -1; // Move nulls to the end
-                    return c2.getDate().compareTo(c1.getDate()); // Sort by date
+                    if (c1.getDate() == null) return 1;
+                    if (c2.getDate() == null) return -1;
+                    return c2.getDate().compareTo(c1.getDate());
                 });
 
                 ticketAdapter.updateList(complaintsList);
@@ -129,20 +147,13 @@ public class TicketAdminFragment extends Fragment implements TicketAdapter.OnTic
         });
     }
 
-
-    private void showToast(String message) {
-        if (getContext() != null) {
-            Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
-        }
-    }
-
     private void setupSearchListener() {
         searchEditText.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
 
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+            public void onTextChanged(CharSequence s, int start, int before, int count) { }
 
             @Override
             public void afterTextChanged(Editable s) {
@@ -162,83 +173,95 @@ public class TicketAdminFragment extends Fragment implements TicketAdapter.OnTic
         ticketAdapter.filter(searchQuery, filter);
     }
 
-    @Override
-    public void onTicketClick(Complaints complaint) {
-        showAssignDialog(complaint);
-    }
-
-    private void showAssignDialog(Complaints complaint) {
-        DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference("Users");
-        Query executivesQuery = usersRef.orderByChild("role").equalTo("executive");
-
-        executivesQuery.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                List<User> executives = new ArrayList<>();
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    User executive = snapshot.getValue(User.class);
-                    if (executive != null) {
-                        executive.setId(snapshot.getKey());
-                        executives.add(executive);
-                    }
-                }
-
-                if (executives.isEmpty()) {
-                    Toast.makeText(getContext(), "No executives found", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-                String[] executiveNames = new String[executives.size()];
-                for (int i = 0; i < executives.size(); i++) {
-                    executiveNames[i] = executives.get(i).getName();
-                }
-
-                new MaterialAlertDialogBuilder(requireContext())
-                        .setTitle("Assign Ticket")
-                        .setItems(executiveNames, (dialog, which) -> {
-                            User selectedExecutive = executives.get(which);
-                            assignTicketToExecutive(complaint, selectedExecutive);
-                        })
-                        .setNegativeButton("Cancel", null)
-                        .show();
+    private void setupAdapterSelectionListener() {
+        // Start ActionMode when selection begins
+        ticketAdapter.setOnSelectionChangedListener(count -> {
+            if (count > 0 && actionMode == null) {
+                actionMode = ((androidx.appcompat.app.AppCompatActivity) getActivity()).startSupportActionMode(actionModeCallback);
             }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                Toast.makeText(getContext(), "Failed to load executives", Toast.LENGTH_SHORT).show();
+            if (actionMode != null) {
+                if (count == 0) {
+                    actionMode.finish();
+                } else {
+                    actionMode.setTitle(count + " selected");
+                }
             }
         });
     }
 
-    private void assignTicketToExecutive(Complaints complaint, User executive) {
-        DatabaseReference complaintRef = FirebaseDatabase.getInstance().getReference("complaints").child(complaint.getId());
-        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("Users").child(executive.getId());
+    // Define the ActionMode callback for multi-select
+    private final ActionMode.Callback actionModeCallback = new ActionMode.Callback() {
+        @Override
+        public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+            MenuInflater inflater = mode.getMenuInflater();
+            inflater.inflate(R.menu.menu_selection, menu);
+            return true;
+        }
 
-        Map<String, Object> complaintUpdates = new HashMap<>();
-        complaintUpdates.put("assignedTo", executive.getName());
-        complaintUpdates.put("status", "Assigned");
+        @Override
+        public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+            return false;
+        }
 
-        complaintRef.updateChildren(complaintUpdates)
+        @Override
+        public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+            if (item.getItemId() == R.id.action_assign) {
+                // Trigger bulk assignment via Bottom Sheet
+                showBulkAssignBottomSheet(ticketAdapter.getSelectedComplaints());
+                mode.finish();
+                return true;
+            }
+            return false;
+        }
+
+        @Override
+        public void onDestroyActionMode(ActionMode mode) {
+            ticketAdapter.disableSelectionMode();
+            actionMode = null;
+        }
+    };
+
+    // Open BulkAssignBottomSheet for bulk assignment
+    private void showBulkAssignBottomSheet(List<Complaints> selectedComplaints) {
+        BulkAssignBottomSheet bottomSheet = BulkAssignBottomSheet.newInstance();
+        bottomSheet.setOnExecutiveSelectedListener(selectedExecutive -> {
+            assignTicketsToExecutive(selectedComplaints, selectedExecutive);
+        });
+        bottomSheet.show(getChildFragmentManager(), "BulkAssignBottomSheet");
+    }
+
+    // Updated method: Use multi-location update so that for each complaint the "assignedTo" and "status" fields are updated
+    // Update selected tickets in Firebase with the chosen executive.
+    private void assignTicketsToExecutive(List<Complaints> selectedComplaints, User executive) {
+        if (selectedComplaints == null || selectedComplaints.isEmpty()) return;
+
+        // Prepare a map for multi-location update.
+        // Note: We update "complaintStatus" (not "status") to match your model.
+        Map<String, Object> updates = new HashMap<>();
+        for (Complaints complaint : selectedComplaints) {
+            // Ensure complaint ID is valid
+            if (complaint.getId() == null) continue;
+            updates.put("complaints/" + complaint.getId() + "/assignedTo", executive.getName());
+            updates.put("complaints/" + complaint.getId() + "/complaintStatus", "Assigned");
+            updates.put("Users/" + executive.getId() + "/complaintIds/" + complaint.getId(), true);
+        }
+
+        FirebaseDatabase.getInstance().getReference().updateChildren(updates)
                 .addOnSuccessListener(aVoid -> {
-                    userRef.child("complaintIds").child(complaint.getId()).setValue(true)
-                            .addOnSuccessListener(aVoid1 -> {
-                                Toast.makeText(getContext(), "Ticket assigned successfully", Toast.LENGTH_SHORT).show();
-                                showAssignmentSuccessAnimation();
-                            })
-                            .addOnFailureListener(e -> {
-                                Toast.makeText(getContext(), "Failed to update executive: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                            });
+                    Toast.makeText(getContext(), "Tickets assigned successfully", Toast.LENGTH_SHORT).show();
+                    showAssignmentSuccessAnimation();
                 })
                 .addOnFailureListener(e -> {
-                    Toast.makeText(getContext(), "Failed to assign ticket: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Failed to assign tickets: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 });
     }
+
 
     private void showAssignmentSuccessAnimation() {
         View successView = LayoutInflater.from(getContext())
                 .inflate(R.layout.assignment_success_animation, null);
 
-        AlertDialog dialog = new MaterialAlertDialogBuilder(requireContext())
+        androidx.appcompat.app.AlertDialog dialog = new com.google.android.material.dialog.MaterialAlertDialogBuilder(requireContext())
                 .setView(successView)
                 .create();
 
@@ -246,8 +269,27 @@ public class TicketAdminFragment extends Fragment implements TicketAdapter.OnTic
             dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         }
         dialog.show();
-
-        // Dismiss dialog after animation
         new Handler().postDelayed(dialog::dismiss, 1500);
+    }
+
+    // Restore the Ticket Journey feature.
+    // When a ticket is tapped (in non-selection mode), show its journey.
+    private void showJourneyBottomSheet(Complaints complaint) {
+        // This assumes you have a TicketJourneyBottomSheet class with a newInstance() method.
+        TicketJourneyBottomSheet bottomSheet = TicketJourneyBottomSheet.newInstance(complaint, TicketJourneyBottomSheet.ROLE_ADMIN);
+        bottomSheet.show(getChildFragmentManager(), "TicketJourney");
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (actionMode != null) {
+            actionMode.finish();
+        }
+    }
+
+    // Helper method to show Toast messages.
+    private void showToast(String message) {
+        Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
     }
 }

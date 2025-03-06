@@ -42,7 +42,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
-
                 app:singleSelection="true">
 
                 <com.google.android.material.chip.Chip
@@ -92,7 +91,7 @@
                     android:layout_height="wrap_content"
                     android:text="Unassigned"
                     app:rippleColor="#D79767"
-                   android:outlineAmbientShadowColor="@color/green"
+                    android:outlineAmbientShadowColor="@color/green"
                     android:searchResultHighlightColor="@color/orange"
                     app:chipStrokeColor="@color/orange"
                     android:background="@drawable/admin_edittext_corner"
@@ -106,7 +105,15 @@
                 android:layout_height="wrap_content" />
 
         </LinearLayout>
-
     </androidx.core.widget.NestedScrollView>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_assign_selected"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="16dp"
+
+        android:contentDescription="Assign Selected Tickets" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

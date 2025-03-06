@@ -28,10 +28,12 @@ import java.util.List;
 import java.util.Locale;
 
 public class tabComplaintsExecutive extends Fragment {
+    private int currentFilter = MyticketsExecutiveFragment.FILTER_ALL;
 
     private RecyclerView recyclerViewComplaints;
     private ComplaintsAdapterExecutive adapter;
     private DatabaseReference databaseReference;
+    List<Complaints> complaintsList = new ArrayList<>();
 
     public tabComplaintsExecutive() {
         // Required empty public constructor
@@ -55,7 +57,7 @@ public class tabComplaintsExecutive extends Fragment {
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                List<Complaints> complaintsList = new ArrayList<>();
+
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     Complaints complaint = snapshot.getValue(Complaints.class);
                     if (complaint != null) {
@@ -68,8 +70,8 @@ public class tabComplaintsExecutive extends Fragment {
                                 if (journeyEvent != null) {
                                     journeyEvents.add(journeyEvent);
                                 }
-                            }
-                            complaint.setJourneyEvents(journeyEvents);
+                            }applyFilter(currentFilter);
+
                         }
                         complaintsList.add(complaint);
                     }
@@ -171,5 +173,15 @@ public class tabComplaintsExecutive extends Fragment {
         DatabaseReference complaintRef = FirebaseDatabase.getInstance().getReference("complaints").child(complaint.getId());
         complaintRef.child("ticketJourney").setValue(complaint.getTicketJourney());
     }
+    public void applyFilter(int filterType) {
+        currentFilter = filterType;
+        List<Complaints> filteredList = new ArrayList<>();
 
-}
+        for (Complaints complaint : complaintsList) {
+            if (MyticketsExecutiveFragment.matchesFilter(complaint.getAssignedTo(),
+                    complaint.getDate(), filterType)) {
+                filteredList.add(complaint);
+            }
+        }
+
+}}

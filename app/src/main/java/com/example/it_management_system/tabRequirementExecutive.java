@@ -23,7 +23,7 @@ public class tabRequirementExecutive extends Fragment {
     private RequirementsAdapterExecutive adapter;
     private DatabaseReference databaseReference;
     private List<RequirementModel> requirementList = new ArrayList<>();
-
+    private int currentFilter = MyticketsExecutiveFragment.FILTER_ALL;
     public tabRequirementExecutive() {
         // Required empty public constructor
     }
@@ -48,7 +48,7 @@ public class tabRequirementExecutive extends Fragment {
                     if (requirement != null) {
                         requirementList.add(requirement); // Add each requirement to the list
                     }
-                }
+                }applyFilter(currentFilter);
                 Collections.sort(requirementList, (req1, req2) -> {
                     if (req1.getFromDate() == null && req2.getFromDate() == null) return 0;
                     if (req1.getFromDate() == null) return 1;
@@ -69,4 +69,14 @@ public class tabRequirementExecutive extends Fragment {
 
         return view;
     }
+    public void applyFilter(int filterType) {
+        currentFilter = filterType;
+        List<RequirementModel> filteredList = new ArrayList<>();
+
+        for (RequirementModel requirement : requirementList) {
+            if (MyticketsExecutiveFragment.matchesFilter(requirement.getAssignedTo(),
+                    requirement.getFromDate(), filterType)) {
+                filteredList.add(requirement);
+            }
+        }}
 }

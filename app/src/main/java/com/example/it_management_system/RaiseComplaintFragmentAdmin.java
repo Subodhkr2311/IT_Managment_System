@@ -314,38 +314,39 @@ public class RaiseComplaintFragmentAdmin extends Fragment {
     private void populateComplaintDataSet() {
         // Define locations
         Map<String, Boolean> locations = new HashMap<>();
-        locations.put("Ward 1", true);
-        locations.put("Ward 2", true);
-        locations.put("Ward 3", true);
-        locations.put("Main Road", true);
-        locations.put("Market Area", true);
-        locations.put("Residential Area", true);
-        locations.put("Park Area", true);
-        locations.put("Industrial Zone", true);
+        locations.put("B012A", true);
+        locations.put("B012B", true);
+        locations.put("B013", true);
+        locations.put("B007", true);
+        locations.put("B114", true);
+        locations.put("B115", true);
+        locations.put("B116", true);
         locations.put("Others", true);
 
         // Define complaint types and titles
-        Map<String, Boolean> garbageCollectionTitles = new HashMap<>();
-        garbageCollectionTitles.put("Garbage not collected for days", true);
-        garbageCollectionTitles.put("Overflowing garbage bins", true);
+        Map<String, Boolean> WifiCollectionTitles = new HashMap<>();
+        WifiCollectionTitles.put("Wi-Fi Authentication Problem", true);
+        WifiCollectionTitles.put("Wi-Fi Network Not Visible", true);
+        WifiCollectionTitles.put("Wi-Fi Not Connecting ", true);
 
-        Map<String, Boolean> roadMaintenanceTitles = new HashMap<>();
-        roadMaintenanceTitles.put("Potholes on road", true);
-        roadMaintenanceTitles.put("Road blocked due to construction", true);
+        Map<String, Boolean> ProjectorTitles = new HashMap<>();
+        ProjectorTitles.put("Projector Not Turning On", true);
+        ProjectorTitles.put("Blurred or Distorted Projection", true);
+        ProjectorTitles.put("Projector Remote Not Working", true);
+        ProjectorTitles.put("others", true);
 
-        Map<String, Boolean> waterSupplyTitles = new HashMap<>();
-        waterSupplyTitles.put("No water supply in the area", true);
-        waterSupplyTitles.put("Water leakage in pipes", true);
+        Map<String, Boolean> PrinterTitles = new HashMap<>();
+        PrinterTitles.put("Paper Jam Issue", true);
+        PrinterTitles.put("No Ink or Toner", true);
+        PrinterTitles.put("Printer Not Responding", true);
 
-        Map<String, Boolean> electricityTitles = new HashMap<>();
-        electricityTitles.put("Power outage in the area", true);
-        electricityTitles.put("Streetlights not working", true);
+
 
         Map<String, Map<String, Boolean>> complaintTypes = new HashMap<>();
-        complaintTypes.put("Garbage Collection Issue", garbageCollectionTitles);
-        complaintTypes.put("Road Maintenance Issue", roadMaintenanceTitles);
-        complaintTypes.put("Water Supply Issue", waterSupplyTitles);
-        complaintTypes.put("Electricity Issue", electricityTitles);
+        complaintTypes.put("Wi-Fi Issue", WifiCollectionTitles);
+        complaintTypes.put("Projector Not Working", ProjectorTitles);
+        complaintTypes.put("Printer Not Working", PrinterTitles);
+
 
         // Prepare ComplaintData structure for Firebase
         Map<String, Object> complaintData = new HashMap<>();

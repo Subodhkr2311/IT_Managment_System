@@ -31,8 +31,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-import com.google.mlkit.nl.translate.Translator;
-import android.widget.RadioButton;
+
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -114,12 +113,12 @@ public class RaiseComplaintFragment extends Fragment {
     }
 
     private void populateSpinners() {
-        String[] locations = {"Select Location", "Ward 1", "Ward 2", "Ward 3", "Main Road", "others"};
+        String[] locations = {"Select Location", "B012A", "B012B", "B013", "B007","B114", "B115","B116", "B117", "others"};
         ArrayAdapter<String> locationAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, locations);
         locationAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         locationSpinner.setAdapter(locationAdapter);
 
-        String[] complaintTypes =  {"Select Complaint Type", "Garbage Collection Issue", "Road Maintenance Issue", "Water Supply Issue", "others"};
+        String[] complaintTypes =  {"Select Complaint Type", "Wi-Fi Issue", " Projector Not Working", "Printer Not Working", "others"};
         ArrayAdapter<String> typeAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, complaintTypes);
         typeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         complaintTypeSpinner.setAdapter(typeAdapter);
@@ -127,16 +126,16 @@ public class RaiseComplaintFragment extends Fragment {
 
     private void loadComplaintTitles(String complaintType) {
         String[] titles;
-        if (complaintType.equals("Garbage Collection Issue")) {
-            titles = new String[]{"Select Title", "Garbage not collected for days (Required time: 1 day)", "Overflowing garbage bins (Required time: 2 hours)"};
-        } else if (complaintType.equals("Road Maintenance Issue")) {
-            titles = new String[]{"Select Title", "Potholes on road (Required time: 2 days)", "Road blocked due to construction (Required time: 3 days)"};
-        } else if (complaintType.equals("Water Supply Issue")) {
-            titles = new String[]{"Select Title", "No water supply in the area (Required time: 1 day)", "Water leakage in pipes (Required time: 4 hours)"};
+        if (complaintType.equals("Wi-Fi Issue")) {
+            titles = new String[]{"Select Title", "Wi-Fi Authentication Problem", "Wi-Fi Network Not Visible","Wi-Fi Not Connecting "};
+        } else if (complaintType.equals(" Projector Not Working")) {
+            titles = new String[]{"Select Title", "Projector Not Turning On", "Blurred or Distorted Projection","Projector Remote Not Working","others"};
+        } else if (complaintType.equals("Printer Not Working")) {
+            titles = new String[]{"Select Title", "Paper Jam Issue", "No Ink or Toner","Printer Not Responding"};
         } else if (complaintType.equals("others")) {
             titles = new String[]{"Select Title", "Describe your complaint and location in the description section"};
         } else {
-            titles = new String[]{"Select Title", "General municipality issue (Required time: 2 days)"};
+            titles = new String[]{"Select Title", "General IT issue (Required time: 2 days)"};
         }
         ArrayAdapter<String> titleAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, titles);
         titleAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -271,91 +270,7 @@ public class RaiseComplaintFragment extends Fragment {
         imageLinkTextView.setVisibility(View.GONE);
         selectedImageUri = null;
     }
-    // Add these methods to your existing RaiseComplaintFragment class
 
-   public void translateToHindi(Translator englishHindiTranslator) {
-        // Translate static text
-        englishHindiTranslator.translate("Submit")
-                .addOnSuccessListener(translatedText -> submitButton.setText(translatedText));
 
-        englishHindiTranslator.translate("Upload Photo")
-                .addOnSuccessListener(translatedText -> photoUploadButton.setText(translatedText));
 
-        // Translate spinner items
-        translateSpinnerItems(locationSpinner, englishHindiTranslator);
-        translateSpinnerItems(complaintTypeSpinner, englishHindiTranslator);
-        translateSpinnerItems(complaintTitleSpinner, englishHindiTranslator);
-
-        // Translate hint
-        englishHindiTranslator.translate(descriptionInput.getHint().toString())
-                .addOnSuccessListener(translatedText -> descriptionInput.setHint(translatedText));
-
-        // Store original English text for reset
-        if (requiredTimeTextView.getTag() == null) {
-            requiredTimeTextView.setTag(requiredTimeTextView.getText().toString());
-        }
-
-        englishHindiTranslator.translate(requiredTimeTextView.getText().toString())
-                .addOnSuccessListener(translatedText -> requiredTimeTextView.setText(translatedText));
-    }
-    public void translateSpinnerItems(Spinner spinner, Translator translator) {
-        ArrayAdapter<String> currentAdapter = (ArrayAdapter<String>) spinner.getAdapter();
-        if (currentAdapter == null) return;
-
-        // Create a new list to hold translated items
-        List<String> items = new ArrayList<>();
-        for (int i = 0; i < currentAdapter.getCount(); i++) {
-            items.add(currentAdapter.getItem(i));
-        }
-
-        // Create a new adapter for translated items
-        ArrayAdapter<String> newAdapter = new ArrayAdapter<>(
-                getContext(),
-                android.R.layout.simple_spinner_item,
-                new ArrayList<>()
-        );
-        newAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-        // Keep track of how many items have been translated
-        final int[] translatedCount = {0};
-        final int totalItems = items.size();
-
-        // Translate each item
-        for (String item : items) {
-            translator.translate(item)
-                    .addOnSuccessListener(translatedText -> {
-                        newAdapter.add(translatedText);
-                        translatedCount[0]++;
-
-                        // When all items are translated, set the new adapter
-                        if (translatedCount[0] == totalItems) {
-                            spinner.setAdapter(newAdapter);
-                        }
-                    })
-                    .addOnFailureListener(e -> {
-                        // In case of failure, add the original text
-                        newAdapter.add(item);
-                        translatedCount[0]++;
-
-                        if (translatedCount[0] == totalItems) {
-                            spinner.setAdapter(newAdapter);
-                        }
-                    });
-        }
-    }
-
-    public void resetSpinnerToEnglish(Spinner spinner, List<String> originalItems) {
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(
-                getContext(),
-                android.R.layout.simple_spinner_item,
-                originalItems
-        );
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(adapter);
-    }
-    public void resetsToEnglish() {
-        // Logic to reset to English, e.g., updating UI or changing language settings
-        Log.d("RaiseComplaintFragment", "Resetting language to English");
-        // Add your reset logic here
-    }
 }

@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -30,11 +31,6 @@ public class ComplaintsAdapterExecutive extends RecyclerView.Adapter<ComplaintsA
     private List<Complaints> complaintsList;
     private Context context;
     private tabComplaintsExecutive fragment;
-
-    // Declare variables for the journey dialog
-    private EditText resolveReasonInput;
-    private EditText expectedResolutionTime;
-    private JourneyAdapter journeyAdapter;
 
     public ComplaintsAdapterExecutive(List<Complaints> complaintsList, Context context, tabComplaintsExecutive fragment) {
         this.complaintsList = complaintsList;
@@ -58,9 +54,10 @@ public class ComplaintsAdapterExecutive extends RecyclerView.Adapter<ComplaintsA
         holder.location.setText(complaint.getLocation());
 
         holder.itemView.setOnLongClickListener(v -> {
-            showJourneyDialog(complaintsList.get(position));
+            showJourneyBottomSheet(complaintsList.get(position));
             return true;
         });
+
         holder.status.setText(complaint.getStatus());
         if ("Claimed".equals(complaint.getStatus())) {
             holder.status.setTextColor(Color.GREEN); // Example: green for claimed tickets
@@ -98,127 +95,15 @@ public class ComplaintsAdapterExecutive extends RecyclerView.Adapter<ComplaintsA
         }
     }
 
-    private void showJourneyDialog(Complaints complaint) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        View dialogView = LayoutInflater.from(context).inflate(R.layout.dialog_ticket_journey, null);
-        builder.setView(dialogView);
+    private void showJourneyBottomSheet(Complaints complaint) {
+        if (context instanceof AppCompatActivity) {
+            AppCompatActivity activity = (AppCompatActivity) context;
 
-        RecyclerView rvJourney = dialogView.findViewById(R.id.rvJourney);
-        rvJourney.setLayoutManager(new LinearLayoutManager(context));
+            // For executive view
+            TicketJourneyBottomSheet bottomSheet =
+                    TicketJourneyBottomSheet.newInstance(complaint, TicketJourneyBottomSheet.ROLE_EXECUTIVE);
 
-        List<Complaints.JourneyEvent> journeyEvents = complaint.getTicketJourney();
-        journeyAdapter = new JourneyAdapter(journeyEvents);
-        rvJourney.setAdapter(journeyAdapter);
-
-        Button btnArriving = dialogView.findViewById(R.id.btnArriving);
-        Button btnResolve = dialogView.findViewById(R.id.btnResolve);
-        Button btnResolveYes = dialogView.findViewById(R.id.btnResolveYes);
-        Button btnResolveNo = dialogView.findViewById(R.id.btnResolveNo);
-        TextView resolveReasonSection = dialogView.findViewById(R.id.resolveReasonSection);
-        resolveReasonInput = dialogView.findViewById(R.id.resolveReasonInput);
-        expectedResolutionTime = dialogView.findViewById(R.id.expectedResolutionTime);
-
-        // Initially hide resolve options
-        btnResolveYes.setVisibility(View.GONE);
-        btnResolveNo.setVisibility(View.GONE);
-        resolveReasonSection.setVisibility(View.GONE);
-        expectedResolutionTime.setVisibility(View.GONE);
-
-        // Hide the Arriving button if ticket is resolved
-        btnArriving.setVisibility("Resolved".equals(complaint.getStatus()) ? View.GONE : View.VISIBLE);
-
-        btnArriving.setOnClickListener(v -> {
-            // Show TimePicker for arriving
-            TimePickerDialog timePickerDialog = new TimePickerDialog(context, (view, hourOfDay, minute) -> {
-                String selectedTime = hourOfDay + "h " + minute + "m";
-                String timestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
-                complaint.addJourneyEvent("Arriving in " + selectedTime, timestamp);
-
-                // Save to Firebase
-                DatabaseReference complaintRef = FirebaseDatabase.getInstance().getReference("complaints").child(complaint.getId());
-                complaintRef.child("ticketJourney").setValue(complaint.getTicketJourney());
-
-                // Show Mark as Resolved button and hide Arriving button
-                btnResolve.setVisibility(View.VISIBLE);
-                btnArriving.setVisibility(View.GONE);
-                journeyAdapter.notifyDataSetChanged();
-            }, 0, 0, true);
-            timePickerDialog.setTitle("Select Arrival Time");
-            timePickerDialog.show();
-        });
-
-        btnResolve.setOnClickListener(v -> {
-            btnResolveYes.setVisibility(View.VISIBLE);
-            btnResolveNo.setVisibility(View.VISIBLE);
-            btnResolve.setVisibility(View.GONE);
-        });
-
-        btnResolveYes.setOnClickListener(v -> {
-            String executiveName = "Executive Name"; // Replace with actual executive's name
-            String timestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
-            complaint.addJourneyEvent("Ticket resolved by executive: " + executiveName, timestamp);
-
-            // Update Firebase
-            DatabaseReference complaintRef = FirebaseDatabase.getInstance().getReference("complaints").child(complaint.getId());
-            complaintRef.child("ticketJourney").setValue(complaint.getTicketJourney());
-            complaintRef.child("status").setValue("Resolved");
-
-            playCongratulationAnimation();
-
-            // Hide all buttons and show only the journey details
-            btnArriving.setVisibility(View.GONE);
-            btnResolveYes.setVisibility(View.GONE);
-            btnResolveNo.setVisibility(View.GONE);
-            resolveReasonSection.setVisibility(View.GONE);
-            expectedResolutionTime.setVisibility(View.GONE);
-
-            journeyAdapter.notifyDataSetChanged();
-        });
-
-        btnResolveNo.setOnClickListener(v -> {
-            resolveReasonSection.setVisibility(View.VISIBLE);
-            btnResolveYes.setVisibility(View.GONE);
-            btnResolveNo.setVisibility(View.GONE);
-            resolveReasonInput.setVisibility(View.VISIBLE);
-            expectedResolutionTime.setVisibility(View.VISIBLE);
-            showExpectedResolutionTimePicker(expectedResolutionTime, complaint, btnArriving); // Pass btnArriving
-        });
-
-        builder.setTitle("Ticket Journey")
-                .setPositiveButton("Close", (dialog, which) -> dialog.dismiss());
-
-        AlertDialog dialog = builder.create();
-        dialog.show();
+            bottomSheet.show(activity.getSupportFragmentManager(), "TicketJourney");
+        }
     }
-
-    private void showExpectedResolutionTimePicker(EditText expectedResolutionTime, Complaints complaint, Button btnArriving) {
-        expectedResolutionTime.setOnClickListener(v -> {
-            TimePickerDialog timePickerDialog = new TimePickerDialog(context, (view, hourOfDay, minute) -> {
-                String resolutionTime = hourOfDay + ":" + minute;
-                String timestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
-                String reason = resolveReasonInput.getText().toString();
-
-                complaint.addJourneyEvent("Resolve failed: " + reason + ". Expected to be resolved by " + resolutionTime, timestamp);
-
-                // Update Firebase
-                DatabaseReference complaintRef = FirebaseDatabase.getInstance().getReference("complaints").child(complaint.getId());
-                complaintRef.child("ticketJourney").setValue(complaint.getTicketJourney());
-
-                // Hide both input fields after setting expected time
-                resolveReasonInput.setVisibility(View.GONE);
-                expectedResolutionTime.setVisibility(View.GONE);
-                btnArriving.setVisibility(View.VISIBLE); // Show Mark Arriving option
-                journeyAdapter.notifyDataSetChanged();
-            }, 0, 0, true);
-            timePickerDialog.setTitle("Expected Resolution Time");
-            timePickerDialog.show();
-        });
-    }
-
-    private void playCongratulationAnimation() {
-        // Your animation code here
-        Toast.makeText(context, "Congratulations! Ticket resolved successfully!", Toast.LENGTH_SHORT).show();
-        // You can replace this Toast with an actual animation or dialog
-    }
-
 }

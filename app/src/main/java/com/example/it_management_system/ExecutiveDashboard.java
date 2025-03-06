@@ -28,7 +28,7 @@ public class ExecutiveDashboard extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_executive_dashboard);
 
-        setupEdgeToEdge();
+
 
 
         MaterialToolbar toolbar = findViewById(R.id.toolbarExecutive);

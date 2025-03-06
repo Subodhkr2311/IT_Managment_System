@@ -33,8 +33,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
-import com.google.mlkit.nl.translate.Translator;
-import android.widget.RadioButton;
+
 public class ProfileUserFragment extends Fragment {
 
     private FirebaseAuth mAuth;

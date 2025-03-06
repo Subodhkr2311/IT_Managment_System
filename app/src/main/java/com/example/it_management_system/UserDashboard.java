@@ -23,10 +23,6 @@ import com.google.android.material.appbar.MaterialToolbar;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.google.mlkit.nl.translate.TranslateLanguage;
-import com.google.mlkit.nl.translate.Translation;
-import com.google.mlkit.nl.translate.Translator;
-import com.google.mlkit.nl.translate.TranslatorOptions;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class UserDashboard extends AppCompatActivity {
@@ -35,7 +31,7 @@ public class UserDashboard extends AppCompatActivity {
     private ImageView notificationIcon;
     private int unreadNotificationCount = 0;
     private boolean isHindi = false;
-    private Translator englishHindiTranslator;
+
     private TextView toolbarTitle;
 
     @Override
@@ -50,36 +46,7 @@ public class UserDashboard extends AppCompatActivity {
         View fragmentContainer = findViewById(R.id.fragment_containerUser);
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigationUser);
         toolbarTitle = findViewById(R.id.toolbar_titleUser);
-        TranslatorOptions options = new TranslatorOptions.Builder()
-                .setSourceLanguage(TranslateLanguage.ENGLISH)
-                .setTargetLanguage(TranslateLanguage.HINDI)
-                .build();
-        final Translator translator = Translation.getClient(options);
 
-// Download model
-        translator.downloadModelIfNeeded()
-                .addOnSuccessListener(unused -> Log.d("Translation", "Model downloaded successfully"))
-                .addOnFailureListener(e -> Log.e("Translation", "Failed to download model", e));
-
-        englishHindiTranslator = Translation.getClient(options);
-        englishHindiTranslator.downloadModelIfNeeded()
-                .addOnSuccessListener(result -> {
-                    // Model downloaded successfully
-                })
-                .addOnFailureListener(e -> {
-                    // Model couldn't be downloaded or other error
-                    Toast.makeText(UserDashboard.this,
-                            "Error downloading language model", Toast.LENGTH_SHORT).show();
-                });
-        FloatingActionButton translateFab = findViewById(R.id.translateFab);
-        translateFab.setOnClickListener(v -> {
-            if (!isHindi) {
-                translateToHindi();
-            } else {
-                resetToEnglish();
-            }
-            isHindi = !isHindi;
-        });
 
 
         // Set up the toolbar
@@ -144,50 +111,10 @@ public class UserDashboard extends AppCompatActivity {
 
 
 
-    private void translateToHindi() {
-        // Translate toolbar title
-        englishHindiTranslator.translate(toolbarTitle.getText().toString())
-                .addOnSuccessListener(translatedText -> {
-                    toolbarTitle.setText(translatedText);
-                })
-                .addOnFailureListener(e -> {
-                    Toast.makeText(UserDashboard.this,
-                            "Translation failed", Toast.LENGTH_SHORT).show();
-                });
 
-        // Get current fragment and translate its content
-        Fragment currentFragment = getSupportFragmentManager()
-                .findFragmentById(R.id.fragment_containerUser);
 
-        if (currentFragment instanceof RaiseComplaintFragment) {
-            ((RaiseComplaintFragment) currentFragment).translateToHindi(englishHindiTranslator);
-        } else if (currentFragment instanceof TicketsHistoryUsersFragment) {
-            ((TicketsHistoryUsersFragment) currentFragment).translateToHindi(englishHindiTranslator);
-        }
-        // Add similar conditions for other fragments
-    }
 
-    private void resetToEnglish() {
-        // Reset toolbar title
-        toolbarTitle.setText("User Dashboard");
 
-        // Reset current fragment content
-        Fragment currentFragment = getSupportFragmentManager()
-                .findFragmentById(R.id.fragment_containerUser);
-
-        if (currentFragment instanceof RaiseComplaintFragment) {
-            ((RaiseComplaintFragment) currentFragment).resetsToEnglish();
-        } else if (currentFragment instanceof TicketsHistoryUsersFragment) {
-            ((TicketsHistoryUsersFragment) currentFragment).resetToEnglish();
-        }
-        // Add similar conditions for other fragments
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        englishHindiTranslator.close();
-    }
     private void showNotifications() {
 
         List<String> notifications = new ArrayList<>();

@@ -4,74 +4,81 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
 import java.util.ArrayList;
 import java.util.List;
 
 public class ExecutivesAdapter extends RecyclerView.Adapter<ExecutivesAdapter.ExecutiveViewHolder> {
 
-    private List<User> executivesList;
-    private List<User> filteredList;
+    public interface OnExecutiveClickListener {
+        void onExecutiveClick(User executive);
+    }
 
-    public ExecutivesAdapter(List<User> executivesList) {
+    private List<User> executivesList;
+    // Keep a copy of the original list for filtering
+    private List<User> originalList;
+    private OnExecutiveClickListener listener;
+
+    public ExecutivesAdapter(List<User> executivesList, OnExecutiveClickListener listener) {
         this.executivesList = executivesList;
-        this.filteredList = new ArrayList<>(executivesList);
+        // Create a copy of the list for filtering
+        this.originalList = new ArrayList<>(executivesList);
+        this.listener = listener;
     }
 
     @NonNull
     @Override
     public ExecutiveViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_executive, parent, false);
+        View view = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.item_executive, parent, false);
         return new ExecutiveViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ExecutiveViewHolder holder, int position) {
-        User executive = filteredList.get(position);
-        holder.nameTextView.setText(executive.getName());
-        holder.emailTextView.setText(executive.getEmail());
+        User executive = executivesList.get(position);
+        holder.tvName.setText(executive.getName());
+        holder.tvEmail.setText(executive.getEmail());
+        holder.itemView.setOnClickListener(v -> {
+            if (listener != null) {
+                listener.onExecutiveClick(executive);
+            }
+        });
     }
 
     @Override
     public int getItemCount() {
-        return filteredList.size();
+        return executivesList.size();
     }
 
+    // Update both the original and filtered lists
     public void updateList(List<User> newList) {
-        executivesList = new ArrayList<>(newList);
-        filteredList = new ArrayList<>(newList);
+        this.originalList = new ArrayList<>(newList);
+        this.executivesList = new ArrayList<>(newList);
         notifyDataSetChanged();
     }
 
-    public void filter(String query, String availability) {
-        filteredList.clear();
-        for (User executive : executivesList) {
-            boolean matchesSearch = query.isEmpty() ||
-                    executive.getName().toLowerCase().contains(query.toLowerCase()) ||
-                    executive.getEmail().toLowerCase().contains(query.toLowerCase());
-
-            boolean matchesAvailability = availability.equals("All") ||
-                    (availability.equals("Available") && executive.isAvailable()) ||
-                    (availability.equals("Unavailable") && !executive.isAvailable());
-
-            if (matchesSearch && matchesAvailability) {
-                filteredList.add(executive);
+    // Filter the list by search query (name and email only)
+    public void filter(String searchQuery, String availability) {
+        List<User> filteredList = new ArrayList<>();
+        for (User user : originalList) {
+            boolean matchesQuery = user.getName().toLowerCase().contains(searchQuery) ||
+                    user.getEmail().toLowerCase().contains(searchQuery);
+            if (matchesQuery) {
+                filteredList.add(user);
             }
         }
+        this.executivesList = filteredList;
         notifyDataSetChanged();
     }
 
     static class ExecutiveViewHolder extends RecyclerView.ViewHolder {
-        TextView nameTextView;
-        TextView emailTextView;
-
-        ExecutiveViewHolder(View itemView) {
+        TextView tvName, tvEmail;
+        public ExecutiveViewHolder(@NonNull View itemView) {
             super(itemView);
-            nameTextView = itemView.findViewById(R.id.executive_name);
-            emailTextView = itemView.findViewById(R.id.executive_email);
+            tvName = itemView.findViewById(R.id.tvExecutiveNameItem);
+            tvEmail = itemView.findViewById(R.id.tvExecutiveEmailItem);
         }
     }
 }

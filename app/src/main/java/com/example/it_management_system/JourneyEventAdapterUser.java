@@ -1,6 +1,6 @@
-// JourneyEventAdapter.java
 package com.example.it_management_system;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +15,8 @@ public class JourneyEventAdapterUser extends RecyclerView.Adapter<JourneyEventAd
 
     public JourneyEventAdapterUser(List<Complaints.JourneyEvent> journeyEventList) {
         this.journeyEventList = journeyEventList;
+        Log.d("JourneyEventAdapterUser", "Adapter created with " +
+                (journeyEventList != null ? journeyEventList.size() : 0) + " items");
     }
 
     @NonNull
@@ -28,6 +30,7 @@ public class JourneyEventAdapterUser extends RecyclerView.Adapter<JourneyEventAd
     @Override
     public void onBindViewHolder(@NonNull JourneyEventViewHolder holder, int position) {
         Complaints.JourneyEvent journeyEvent = journeyEventList.get(position);
+        Log.d("JourneyEventAdapterUser", "Binding: " + journeyEvent.getEvent() + " at " + journeyEvent.getTimestamp());
         holder.event.setText(journeyEvent.getEvent());
         holder.timestamp.setText(journeyEvent.getTimestamp());
     }
@@ -38,7 +41,7 @@ public class JourneyEventAdapterUser extends RecyclerView.Adapter<JourneyEventAd
     }
 
     public static class JourneyEventViewHolder extends RecyclerView.ViewHolder {
-      TextView event, timestamp;
+        TextView event, timestamp;
 
         public JourneyEventViewHolder(@NonNull View itemView) {
             super(itemView);

@@ -1,29 +1,35 @@
 package com.example.it_management_system;
 
-import android.app.Dialog;
 import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
+
+import java.util.ArrayList;
 import java.util.List;
 
 public class ComplaintAdapter extends RecyclerView.Adapter<ComplaintAdapter.ComplaintViewHolder> {
+    private static final String TAG = "ComplaintAdapter";
+
     private List<Complaints> complaintList;
+    private List<Complaints> selectedComplaints = new ArrayList<>();
+    private Context context;
 
     public ComplaintAdapter(List<Complaints> complaintList) {
-        this.complaintList = complaintList;
+        this.complaintList = complaintList != null ? complaintList : new ArrayList<>();
     }
 
     @NonNull
     @Override
     public ComplaintViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext())
+        context = parent.getContext();
+        View view = LayoutInflater.from(context)
                 .inflate(R.layout.complaint_item, parent, false);
         return new ComplaintViewHolder(view);
     }
@@ -31,35 +37,46 @@ public class ComplaintAdapter extends RecyclerView.Adapter<ComplaintAdapter.Comp
     @Override
     public void onBindViewHolder(@NonNull ComplaintViewHolder holder, int position) {
         Complaints complaint = complaintList.get(position);
-        Log.d("ComplaintAdapter", "Binding complaint: " + complaint.getTitle());
+        Log.d(TAG, "Binding complaint: " + complaint.getTitle());
 
-        // Use translated title if available, otherwise use original title
         String titleText = complaint.getTranslatedTitle() != null ?
                 complaint.getTranslatedTitle() :
                 (complaint.getTitle() != null ? complaint.getTitle() : "No Title");
         holder.title.setText(titleText);
 
-        // Use translated description if available, otherwise use original description
         String descriptionText = complaint.getTranslatedDescription() != null ?
                 complaint.getTranslatedDescription() :
                 complaint.getDescription();
-
         if (descriptionText == null || descriptionText.isEmpty()) {
-            holder.description.setVisibility(View.GONE); // Hide if no description
+            holder.description.setVisibility(View.GONE);
         } else {
             holder.description.setText(descriptionText);
-            holder.description.setVisibility(View.VISIBLE); // Show if description exists
+            holder.description.setVisibility(View.VISIBLE);
         }
 
         holder.status.setText(complaint.getStatus() != null ? complaint.getStatus() : "Status Unknown");
         holder.date.setText(complaint.getDate() != null ? complaint.getDate() : "No Date");
         holder.location.setText(complaint.getLocation() != null ? complaint.getLocation() : "No Location");
 
-        // Show journey dialog on item click
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showJourneyDialog(holder.itemView.getContext(), complaint.getTicketJourney());
+        // Toggle selection on item click.
+        holder.itemView.setOnClickListener(v -> {
+            if (selectedComplaints.contains(complaint)) {
+                selectedComplaints.remove(complaint);
+                holder.itemView.setAlpha(1.0f);
+            } else {
+                selectedComplaints.add(complaint);
+                holder.itemView.setAlpha(0.5f);
+            }
+        });
+
+        // Open journey bottom sheet on long click.
+        holder.itemView.setOnLongClickListener(v -> {
+            try {
+                showJourneyBottomSheet(complaint);
+                return true;
+            } catch (Exception e) {
+                Log.e(TAG, "Error showing journey bottom sheet", e);
+                return false;
             }
         });
     }
@@ -70,8 +87,13 @@ public class ComplaintAdapter extends RecyclerView.Adapter<ComplaintAdapter.Comp
     }
 
     public void updateList(List<Complaints> newList) {
-        this.complaintList = newList;
+        this.complaintList = newList != null ? new ArrayList<>(newList) : new ArrayList<>();
+        selectedComplaints.clear();
         notifyDataSetChanged();
+    }
+
+    public List<Complaints> getSelectedComplaints() {
+        return selectedComplaints;
     }
 
     public static class ComplaintViewHolder extends RecyclerView.ViewHolder {
@@ -87,26 +109,18 @@ public class ComplaintAdapter extends RecyclerView.Adapter<ComplaintAdapter.Comp
         }
     }
 
-    private void showJourneyDialog(Context context, List<Complaints.JourneyEvent> journeyEvents) {
-        Dialog dialog = new Dialog(context);
-        dialog.setContentView(R.layout.dialog_ticket_journey_user);
+    private void showJourneyBottomSheet(Complaints complaint) {
+        if (context instanceof AppCompatActivity) {
+            AppCompatActivity activity = (AppCompatActivity) context;
 
-        RecyclerView recyclerView = dialog.findViewById(R.id.recycler_journey_events_user);
-        if (recyclerView != null) {
-            JourneyEventAdapterUser adapter = new JourneyEventAdapterUser(journeyEvents);
-            recyclerView.setAdapter(adapter);
-            recyclerView.setLayoutManager(new LinearLayoutManager(context));
+            // We assume the user role is "User" here
+            // In a real app, you'd get this from your auth/session system
+            TicketJourneyBottomSheet bottomSheet =
+                    TicketJourneyBottomSheet.newInstance(complaint, TicketJourneyBottomSheet.ROLE_USER);
+
+            bottomSheet.show(activity.getSupportFragmentManager(), "TicketJourney");
         } else {
-            Log.e("JourneyDialog", "RecyclerView is null. Please check your layout and ID reference.");
+            Log.e(TAG, "Context is not an AppCompatActivity");
         }
-
-        Button closeButton = dialog.findViewById(R.id.close_button_user);
-        if (closeButton != null) {
-            closeButton.setOnClickListener(v -> dialog.dismiss());
-        } else {
-            Log.e("JourneyDialog", "Close button is null. Please check your layout and ID reference.");
-        }
-
-        dialog.show();
     }
 }
